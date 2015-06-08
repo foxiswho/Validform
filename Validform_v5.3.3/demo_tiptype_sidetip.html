@@ -84,7 +84,12 @@ $(function(){
 	$(".registerform").Validform({
 		tiptype:3,
         ajaxPost:true,
-        dialog:{showModal:true,timeout:2000}
+        /*
+        * showModal 是否 模态对话框
+        * timeout   成功后  毫秒自动关闭  2秒=2000毫秒
+        * settings  dialog的 settings 配置参数
+        * */
+        dialog:{showModal:true,timeout:2000,settings:{title:'提示',fixed: true}}
 	});
 })
 </script>
