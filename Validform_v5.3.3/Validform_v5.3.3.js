@@ -669,7 +669,7 @@
 			return arr;
 		},
 
-		showmsg:function(msg,type,o,triggered,postType){
+		showmsg:function(msg,type,o,triggered){
 			/*
 				msg:提示文字;
 				type:提示信息显示方式;
@@ -696,22 +696,39 @@
 			}
 			
 			if(type==1 || triggered=="byajax" && type!=4){
-                if(o.postType=='ajaxReturn'&&o.settings.dialog&&dialog){
-                    var opt= $.extend({id:'____Validform',title:'提示',fixed: true}, o.settings.dialog.settings),dia=dialog(opt);
+                if((o.postType=='ajaxReturn'|| o.postType=='beforeAjax')&&o.settings&&o.settings.dialog&&dialog){
+                    var opt= $.extend({id:'____Validform_',title:'提示',fixed: true,content:msg}, o.settings.dialog.settings),dia,_submit=$(o.obj.context).find('[type="submit"]');
+                    if(o.postType=='beforeAjax'){
+                        opt.id='____Validform_'+o.postType;
+                    }
+                    dia=dialog(opt);
+                    if(o.postType=='ajaxReturn'){
+                        var a1=dialog.get('____Validform_beforeAjax');
+                        a1&&a1.close();
+                        if(_submit){
+                            _submit.attr('disabled',false);
+                        }
+                    }else{
+                        if(_submit){
+                            _submit.attr('disabled',true);
+                        }
+                    }
                     if(o.settings.dialog.showModal){
                         dia.showModal();
                     }else{
                         dia.show();
                     }
-                    setTimeout(function(){dia.close();
-                        if(o.ret.status=='y'){
-                            if(o.ret.url){
-                                window.location.href=o.ret.url;
-                            }else{
-                                window.location.reload();
+                    if(o.postType!='beforeAjax'){
+                        setTimeout(function(){dia.close();
+                            if(o.ret.status=='y'){
+                                if(o.ret.url){
+                                    //window.location.href=o.ret.url;
+                                }else{
+                                    //window.location.reload();
+                                }
                             }
-                        }
-                    },o.settings.dialog.timeout?o.settings.dialog.timeout:3000);
+                        },o.settings.dialog.timeout?o.settings.dialog.timeout:3000);
+                    }
                 }else{
                     msgobj.find(".Validform_info").html(msg);
                 }
@@ -722,7 +739,7 @@
 				msghidden=false;
 				msgobj.find(".iframe").css("height",msgobj.outerHeight());
 				msgobj.show();
-				setCenter(msgobj,100);
+				//setCenter(msgobj,100);
 			}
 
 			if(type==2 && o.obj){
@@ -999,7 +1016,7 @@
 					ajaxsetup.url=url || ajaxsetup.url || settings.url || curform.attr("action");
 					
 					//byajax：ajax时，tiptye为1、2或3需要弹出提示框;
-					Validform.util.showmsg.call(curform,curform.data("tipmsg").p||tipmsg.p,settings.tiptype,{obj:curform,type:1,sweep:settings.tipSweep},"byajax");
+					Validform.util.showmsg.call(curform,curform.data("tipmsg").p||tipmsg.p,settings.tiptype,{obj:curform,type:1,sweep:settings.tipSweep,postType:'beforeAjax',settings:settings},"byajax");
 
 					//方法里的优先级要高;
 					//有undefined情况;

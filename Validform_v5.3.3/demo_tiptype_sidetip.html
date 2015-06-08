@@ -27,7 +27,7 @@
         
     	<h2 class="green">提示效果二：右侧提示</h2>
         
-        <form class="registerform" action="demo/ajax_post.php">
+        <form class="registerform" action="demo/ajax_post.php" method="post">
             <table width="100%" style="table-layout:fixed;">
                 <tr>
                     <td class="need" style="width:10px;">*</td>
@@ -83,6 +83,7 @@ $(function(){
 		
 	$(".registerform").Validform({
 		tiptype:3,
+        ajaxPost:true,
         dialog:{showModal:true,timeout:2000}
 	});
 })
