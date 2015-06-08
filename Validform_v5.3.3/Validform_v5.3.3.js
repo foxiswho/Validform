@@ -696,7 +696,7 @@
 			}
 			
 			if(type==1 || triggered=="byajax" && type!=4){
-                if((o.postType=='ajaxReturn'|| o.postType=='beforeAjax')&&o.settings&&o.settings.dialog&&dialog){
+                if(type==3&&(o.postType=='ajaxReturn'|| o.postType=='beforeAjax')&&o.settings&&o.settings.dialog&&dialog){
                     var opt= $.extend({id:'____Validform_',title:'提示',fixed: true,content:msg}, o.settings.dialog.settings),dia,_submit=$(o.obj.context).find('[type="submit"]');
                     if(o.postType=='beforeAjax'){
                         opt.id='____Validform_'+o.postType;

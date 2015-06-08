@@ -61,6 +61,18 @@
         <div class="tipmsg">
         	<p>tiptype可以为1、2 和 自定义函数。2 表示右侧提示。</p>
             <p>注意：tiptype为 2 时，各表单元素对应显示提示信息的对象，是在当前元素的父级的 next() 的子级中查找的。<a href="demo_tiptype_sideNonePop.html">要改变这种层级关系，可以给tiptype传入自定义函数</a>。</p>
+
+            <p>
+                tiptype为3时，dialog起作用
+                必须加载dialog插件<br/>
+                <a href="http://aui.github.io/artDialog/doc/index.html" target="_blank">http://aui.github.io/artDialog/doc/index.html</a><br/>
+                /*<br/>
+                * showModal 是否 模态对话框<br/>
+                * timeout   成功后  毫秒自动关闭  2秒=2000毫秒<br/>
+                * settings  dialog的 settings 配置参数<br/>
+                * */<br/>
+                dialog:{showModal:true,timeout:2000,settings:{title:'提示',fixed: true}}
+            </p>
         </div>
          
     </div>
