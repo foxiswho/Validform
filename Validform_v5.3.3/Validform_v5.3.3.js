@@ -188,7 +188,7 @@
 		tipSweep:false,
 		showAllError:false,
 		postonce:false,
-                ajaxPostReturnTip:false,
+        dialog:false,
 		ajaxPost:false
 	}
 	
@@ -696,8 +696,25 @@
 			}
 			
 			if(type==1 || triggered=="byajax" && type!=4){
-				alert(type)
-				msgobj.find(".Validform_info").html(msg);
+                if(o.postType=='ajaxReturn'&&o.settings.dialog&&dialog){
+                    var opt= $.extend({id:'____Validform',title:'提示',fixed: true}, o.settings.dialog.settings),dia=dialog(opt);
+                    if(o.settings.dialog.showModal){
+                        dia.showModal();
+                    }else{
+                        dia.show();
+                    }
+                    setTimeout(function(){dia.close();
+                        if(o.ret.status=='y'){
+                            if(o.ret.url){
+                                window.location.href=o.ret.url;
+                            }else{
+                                window.location.reload();
+                            }
+                        }
+                    },o.settings.dialog.timeout?o.settings.dialog.timeout:3000);
+                }else{
+                    msgobj.find(".Validform_info").html(msg);
+                }
 			}
 			
 			//tiptypt=1时，blur触发showmsg，验证是否通过都不弹框，提交表单触发的话，只要验证出错，就弹框;
@@ -814,7 +831,7 @@
 						if($.trim(data.status)==="y"){
 							inputobj[0].validform_valid="true";
 							data.info && inputobj.attr("sucmsg",data.info);
-							Validform.util.showmsg.call(curform,inputobj.attr("sucmsg") || curform.data("tipmsg").r||tipmsg.r,settings.tiptype,{obj:inputobj,type:2,sweep:settings.tipSweep},"bycheck",'ajaxReturn');
+							Validform.util.showmsg.call(curform,inputobj.attr("sucmsg") || curform.data("tipmsg").r||tipmsg.r,settings.tiptype,{obj:inputobj,type:2,sweep:settings.tipSweep,postType:'ajaxReturn',settings:settings,ret:data},"bycheck");
 							_this.removeClass("Validform_error");
 							errorobj=null;
 							if(inputobj[0].validform_subpost=="postform"){
@@ -822,7 +839,7 @@
 							}
 						}else{
 							inputobj[0].validform_valid=data.info;
-							Validform.util.showmsg.call(curform,data.info,settings.tiptype,{obj:inputobj,type:3,sweep:settings.tipSweep},null,'ajaxReturn');
+							Validform.util.showmsg.call(curform,data.info,settings.tiptype,{obj:inputobj,type:3,sweep:settings.tipSweep,postType:'ajaxReturn',settings:settings,ret:data});
 							_this.addClass("Validform_error");
 						}
 						_this[0].validform_ajax=null;
@@ -841,7 +858,7 @@
 						if(data.statusText!=="abort"){
 							var msg="status: "+data.status+"; statusText: "+data.statusText;
 						
-							Validform.util.showmsg.call(curform,msg,settings.tiptype,{obj:inputobj,type:3,sweep:settings.tipSweep},null,'ajaxReturn');
+							Validform.util.showmsg.call(curform,msg,settings.tiptype,{obj:inputobj,type:3,sweep:settings.tipSweep,postType:'ajaxReturn',settings:settings,ret:data});
 							_this.addClass("Validform_error");
 						}
 						
@@ -1026,11 +1043,11 @@
 							if($.trim(data.status)==="y"){
 								//成功提交;
 								curform[0].validform_status="posted";
-								Validform.util.showmsg.call(curform,data.info,settings.tiptype,{obj:curform,type:2,sweep:settings.tipSweep},"byajax",'ajaxReturn');
+								Validform.util.showmsg.call(curform,data.info,settings.tiptype,{obj:curform,type:2,sweep:settings.tipSweep,postType:'ajaxReturn',settings:settings,ret:data},"byajax");
 							}else{
 								//提交出错;
 								curform[0].validform_status="normal";
-								Validform.util.showmsg.call(curform,data.info,settings.tiptype,{obj:curform,type:3,sweep:settings.tipSweep},"byajax",'ajaxReturn');
+								Validform.util.showmsg.call(curform,data.info,settings.tiptype,{obj:curform,type:3,sweep:settings.tipSweep,postType:'ajaxReturn',settings:settings,ret:data},"byajax");
 							}
 							
 							settings.callback && settings.callback(data);
@@ -1039,7 +1056,7 @@
 						error: function(data){
 							var msg="status: "+data.status+"; statusText: "+data.statusText;
 									
-							Validform.util.showmsg.call(curform,msg,settings.tiptype,{obj:curform,type:3,sweep:settings.tipSweep},"byajax",'ajaxReturn');
+							Validform.util.showmsg.call(curform,msg,settings.tiptype,{obj:curform,type:3,sweep:settings.tipSweep,postType:'ajaxReturn',settings:settings},"byajax");
 							
 							settings.callback && settings.callback(data);
 							curform[0].validform_status="normal";
